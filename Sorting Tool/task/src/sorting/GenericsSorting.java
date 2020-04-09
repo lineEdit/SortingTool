@@ -3,54 +3,93 @@ package sorting;
 import java.util.*;
 
 public class GenericsSorting {
-    enum Type {
-        wordType,
-        lineType,
-        longType
-    }
-    Type type;
+    private DataType type;
+    private List<String> list;
+    private Deque<String> maxValue;
+    private Map<String, Integer> maxCount;
 
-    private List<Long> tList;
-    private Deque<Long> tMaxValue;
-    private Map<Long, Integer> tMaxCount;
+    public DataType getType() {
+        return type;
+    }
+
+    public void setType(DataType type) {
+        this.type = type;
+    }
+
+    public void setType(String type) {
+        try {
+            this.type = DataType.valueOf(type);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public GenericsSorting() {
-        this.type = Type.wordType;
-        this.tList = new ArrayList<>();
-        this.tMaxValue = new ArrayDeque<>();
-        this.tMaxCount = new HashMap<>();
+        this.type = DataType.WORD;
+        this.list = new ArrayList<>();
+        this.maxValue = new ArrayDeque<>();
+        this.maxCount = new HashMap<>();
     }
 
     public void add(StringBuilder stringBuilder) {
-        for (String item : stringBuilder.toString().split("\\s+")) {
-            try {
-                add(Long.parseLong(item));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        switch (type) {
+            case LINE:
+                for (String item : stringBuilder.toString().split("\n")) {
+                    add(item);
+                }
+                break;
+            case WORD:
+            case LONG:
+                for (String item : stringBuilder.toString().split("\\s+")) {
+                    add(item);
+                }
+                break;
         }
     }
 
-    public void add(Long value) {
-        tList.add(value);
-        if (tMaxValue.size() > 0) {
-            if (value > tMaxValue.peek()) {
-                tMaxValue.push(value);
+    public void add(String value) {
+        list.add(value);
+        if (maxValue.size() > 0) {
+            switch (type) {
+                case WORD:
+                case LINE:
+                    if (value.length() > maxValue.peek().length()) {
+                        maxValue.push(value);
+                    }
+                    break;
+                case LONG:
+                    assert maxValue.peek() != null;
+                    if (Long.parseLong(value) > Long.parseLong(maxValue.peek())) {
+                        maxValue.push(value);
+                    }
+                    break;
             }
         } else {
-            tMaxValue.push(value);
+            maxValue.push(value);
         }
-        if (tMaxCount.containsKey(value)) {
-            tMaxCount.replace(value, tMaxCount.get(value) + 1);
+        if (maxCount.containsKey(value)) {
+            maxCount.replace(value, maxCount.get(value) + 1);
         } else {
-            tMaxCount.put(value, 1);
+            maxCount.put(value, 1);
         }
     }
 
     public void show() {
-        System.out.println("Total numbers: " + tList.size());
-        System.out.println("The greatest number: "
-                + tMaxValue.peek()
-                + "(" + tMaxCount.get(tMaxValue.peek()) + " time(s)).");
+        String string = "";
+        int size = list.size();
+        int time = maxCount.get(maxValue.peek());
+        int weight = 100 * time / size;
+        switch (type) {
+            case LINE:
+                string = "Total lines: %d\nThe longest line:\n%s\n(%d + time(s), %d%%).";
+                break;
+            case WORD:
+                string = "Total words: %d\nThe longest word: %s (%d + time(s), %d%%).";
+                break;
+            case LONG:
+                string = "Total numbers: %d\nThe greatest number: %s (%d + time(s), %d%%).";
+                break;
+        }
+        System.out.format(string, size, maxValue.peek(), time, weight);
     }
 }

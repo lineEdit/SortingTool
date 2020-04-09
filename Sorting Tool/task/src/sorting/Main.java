@@ -10,7 +10,7 @@ public class Main {
         }
         GenericsSorting genericsSorting = new GenericsSorting();
         if (args.length == 2 && args[0].contains("-dataType")) {
-            genericsSorting.type = GenericsSorting.Type.valueOf(args[1]);
+            genericsSorting.setType(args[1].toUpperCase());
         }
 
         Scanner scanner = new Scanner(System.in);
