@@ -1,13 +1,27 @@
 package sorting;
 
-import java.util.Deque;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GenericsSorting {
     private List<Long> tList;
     private Deque<Long> tMaxValue;
     private Map<Long, Integer> tMaxCount;
+
+    public GenericsSorting() {
+        this.tList = new ArrayList<>();
+        this.tMaxValue = new ArrayDeque<>();
+        this.tMaxCount = new HashMap<>();
+    }
+
+    public void add(StringBuilder stringBuilder) {
+        for (String item : stringBuilder.toString().split("\\s+")) {
+            try {
+                add(Long.parseLong(item));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public void add(Long value) {
         tList.add(value);
