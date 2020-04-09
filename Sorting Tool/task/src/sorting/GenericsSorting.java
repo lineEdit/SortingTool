@@ -3,11 +3,19 @@ package sorting;
 import java.util.*;
 
 public class GenericsSorting {
+    enum Type {
+        wordType,
+        lineType,
+        longType
+    }
+    Type type;
+
     private List<Long> tList;
     private Deque<Long> tMaxValue;
     private Map<Long, Integer> tMaxCount;
 
     public GenericsSorting() {
+        this.type = Type.wordType;
         this.tList = new ArrayList<>();
         this.tMaxValue = new ArrayDeque<>();
         this.tMaxCount = new HashMap<>();
