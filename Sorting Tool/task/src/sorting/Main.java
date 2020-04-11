@@ -18,26 +18,32 @@ public class Main {
                 mapArgs.put(args[i], null);
             }
         }
-
         GenericsSorting genericsSorting = new GenericsSorting();
+        for (var entry : mapArgs.entrySet()) {
+            switch (entry.getKey()) {
+                case "-dataType":
+                    if (entry.getValue() == null) {
+                        System.out.println("No data type defined!");
+                        return;
+                    }
+                    genericsSorting.setType(entry.getValue());
+                    break;
+                case "-sortingType":
+                    if (entry.getValue() == null) {
+                        System.out.println("No sorting type defined!");
+                        return;
+                    }
+                    genericsSorting.setSorting(entry.getValue());
+                    break;
+                default:
+                    System.out.println("\"" + entry.getKey() + "\" isn't a valid parameter. It's skipped.");
+            }
+        }
+
         Scanner scanner = new Scanner(System.in);
         StringBuilder stringBuilder = new StringBuilder();
         while (scanner.hasNextLine()) {
             stringBuilder.append(scanner.nextLine()).append("\n");
-        }
-
-        genericsSorting.setSorting(DataSorting.NATURAL);
-        genericsSorting.setType(DataType.WORD);
-
-        for (var entry : mapArgs.entrySet()) {
-            switch (entry.getKey()) {
-                case "-dataType":
-                    genericsSorting.setType(entry.getValue());
-                    break;
-                case "-sortingType":
-                    genericsSorting.setSorting(entry.getValue());
-                    break;
-            }
         }
         genericsSorting.add(stringBuilder);
         genericsSorting.sort();
