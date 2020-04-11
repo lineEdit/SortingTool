@@ -100,7 +100,8 @@ public class GenericsSorting {
                 return first.length() - second.length();
             case WORD:
                 if (first.length() == second.length()) {
-                    return Character.compare(first.charAt(0), second.charAt(0));
+//                    return Character.compare(first.charAt(0), second.charAt(0));
+                    return (int) first.charAt(0) - (int) second.charAt(0);
                 }
                 return first.length() - second.length();
             case LONG:
@@ -133,18 +134,19 @@ public class GenericsSorting {
         int size = list.size();
         switch (type) {
             case LINE:
-                string = "Total lines: %d.\nSorted data: ";
+                string = "Total lines: %d.\nSorted data:";
                 break;
             case WORD:
-                string = "\nTotal words: %d.\nSorted data: ";
+                Collections.sort(list);
+                string = "Total numbers: %d.\nSorted data:";
                 break;
             case LONG:
-                string = "Total numbers: %d.\nSorted data: ";
+                string = "Total numbers: %d.\nSorted data:";
                 break;
         }
         System.out.format(string, size);
         for (String item : list) {
-            System.out.print(item + " ");
+            System.out.print(" " + item);
         }
         System.out.println();
     }
