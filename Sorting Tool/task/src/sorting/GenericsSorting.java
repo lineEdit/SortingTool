@@ -1,6 +1,7 @@
 package sorting;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class GenericsSorting {
     private DataType type;
@@ -18,10 +19,14 @@ public class GenericsSorting {
     }
 
     public void setType(String type) {
-        try {
-            this.type = DataType.valueOf(type.toUpperCase());
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (type == null) {
+            this.type = DataType.WORD;
+        } else {
+            try {
+                this.type = DataType.valueOf(type.toUpperCase());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -34,13 +39,14 @@ public class GenericsSorting {
     }
 
     public void setSorting(String sorting) {
-        if (sorting.isEmpty()) {
+        if (sorting == null) {
             this.sorting = DataSorting.NATURAL;
-        }
-        try {
-            this.sorting = DataSorting.valueOf(sorting.toUpperCase());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            try {
+                this.sorting = DataSorting.valueOf(sorting.toUpperCase());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -48,7 +54,7 @@ public class GenericsSorting {
         this.type = DataType.WORD;
         this.list = new ArrayList<>();
         this.maxValue = new ArrayDeque<>();
-        this.maxCount = new HashMap<>();
+        this.maxCount = new TreeMap<>();
     }
 
     public void add(StringBuilder stringBuilder) {
@@ -120,20 +126,20 @@ public class GenericsSorting {
                 return first.length() - second.length();
             case WORD:
 //                Good solution, bud not finished test 8
-//                if (first.length() == second.length()) {
-//                    return Character.compare(first.charAt(0), second.charAt(0));
-//                }
-//                return first.length() - second.length();
-//                Bad solution
-                if (first.matches("-?\\d+") && second.matches("-?\\d+")) {
-                    int a = Integer.parseInt(first);
-                    int b = Integer.parseInt(second);
-                    return Integer.compare(a, b);
-                } else {
-                    return first.length() - second.length();
+                if (first.length() == second.length()) {
+                    return Character.compare(first.charAt(0), second.charAt(0));
                 }
+                return first.length() - second.length();
+//                Bad solution
+//                if (first.matches("-?\\d+") && second.matches("-?\\d+")) {
+//                    int a = Integer.parseInt(first);
+//                    int b = Integer.parseInt(second);
+//                    return Integer.compare(a, b);
+//                } else {
+//                    return first.length() - second.length();
+//                }
             case LONG:
-                return (int) (Long.parseLong(first) - Long.parseLong(second));
+                return Long.compare(Long.parseLong(first), Long.parseLong(second));
         }
         return 0;
     }
@@ -162,19 +168,39 @@ public class GenericsSorting {
         int size = list.size();
         switch (type) {
             case LINE:
-                string = "Total lines: %d.\nSorted data:";
+                string = "Total lines: %d.\n";
                 break;
             case WORD:
-                string = "Total words: %d.\nSorted data:";
+                Collections.sort(list);
+                string = "Total words: %d.\n";
                 break;
             case LONG:
-                string = "Total numbers: %d.\nSorted data:";
+                string = "Total numbers: %d.\n";
                 break;
         }
-        System.out.format(string, size);
-        for (String item : list) {
-            System.out.print(" " + item);
+        switch (sorting) {
+            case NATURAL:
+                System.out.format(string + "Sorted data:", size);
+                for (String item : list) {
+                    System.out.print(" " + item);
+                }
+                break;
+            case BYCOUNT:
+                Map<String, Integer> mapSort = new LinkedHashMap<>();
+                for (String item : list) {
+                    mapSort.put(item, maxCount.get(item));
+                }
+
+                LinkedHashMap<String, Integer> reverseSortedMap = new LinkedHashMap<>();
+                mapSort.entrySet().stream().sorted(Map.Entry.comparingByValue())
+                        .forEachOrdered(x -> reverseSortedMap.put(x.getKey(), x.getValue()));
+
+                System.out.format(string, size);
+                for (var item : reverseSortedMap.entrySet()) {
+                    int weight = 100 * item.getValue() / size;
+                    System.out.println(item.getKey() + ": " + item.getValue() + " time(s), " + weight + "%");
+                }
+                break;
         }
-        System.out.println();
     }
 }

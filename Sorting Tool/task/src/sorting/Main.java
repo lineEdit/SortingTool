@@ -8,13 +8,14 @@ public class Main {
         if (args.length == 0) {
             return;
         }
+
         Map<String, String> mapArgs = new HashMap<>();
         for (int i = 0; i < args.length; ++i) {
             if (i + 1 < args.length) {
                 mapArgs.put(args[i], args[i + 1]);
                 ++i;
             } else {
-                mapArgs.put(args[i], "");
+                mapArgs.put(args[i], null);
             }
         }
 
@@ -25,8 +26,8 @@ public class Main {
             stringBuilder.append(scanner.nextLine()).append("\n");
         }
 
-        genericsSorting.add(stringBuilder);
         genericsSorting.setSorting(DataSorting.NATURAL);
+        genericsSorting.setType(DataType.WORD);
 
         for (var entry : mapArgs.entrySet()) {
             switch (entry.getKey()) {
@@ -38,5 +39,9 @@ public class Main {
                     break;
             }
         }
+//        System.out.println(genericsSorting.getType());
+//        System.out.println(genericsSorting.getSorting());
+        genericsSorting.add(stringBuilder);
+        genericsSorting.sort();
     }
 }
