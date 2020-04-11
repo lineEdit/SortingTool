@@ -40,14 +40,16 @@ public class Main {
                         System.out.println("No inputFile name defined!");
                         return;
                     }
-                    genericsSorting.setInput(entry.getValue());
+                    genericsSorting.setInput(GenericsSorting.DataInput.INPUTFILE);
+                    genericsSorting.setInputName(entry.getValue());
                     break;
                 case "-outputFile":
                     if (entry.getValue() == null) {
                         System.out.println("No inputFile name defined!");
                         return;
                     }
-                    genericsSorting.setOutput(entry.getValue());
+                    genericsSorting.setOutput(GenericsSorting.DataOutput.OUTPUTFILE);
+                    genericsSorting.setOutputName(entry.getValue());
                     break;
                 default:
                     System.out.println("\"" + entry.getKey() + "\" isn't a valid parameter. It's skipped.");

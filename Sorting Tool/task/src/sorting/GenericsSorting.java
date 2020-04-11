@@ -1,5 +1,8 @@
 package sorting;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.*;
 
 public class GenericsSorting {
@@ -8,14 +11,17 @@ public class GenericsSorting {
         WORD,
         LONG
     }
+
     public enum DataSorting {
         NATURAL,
         BYCOUNT
     }
+
     public enum DataInput {
         SCANNER,
         INPUTFILE
     }
+
     public enum DataOutput {
         SCANNER,
         OUTPUTFILE
@@ -24,17 +30,11 @@ public class GenericsSorting {
     private DataType type;
     private DataSorting sorting;
     private DataInput input;
+    private String inputName;
     private DataOutput output;
+    private String outputName;
     private final List<String> list;
     private final Map<String, Integer> maxCount;
-
-    public DataType getType() {
-        return type;
-    }
-
-    public void setType(DataType type) {
-        this.type = type;
-    }
 
     public void setType(String type) {
         try {
@@ -42,14 +42,6 @@ public class GenericsSorting {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public DataSorting getSorting() {
-        return sorting;
-    }
-
-    public void setSorting(DataSorting sorting) {
-        this.sorting = sorting;
     }
 
     public void setSorting(String sorting) {
@@ -60,36 +52,20 @@ public class GenericsSorting {
         }
     }
 
-    public DataInput getInput() {
-        return input;
-    }
-
     public void setInput(DataInput input) {
         this.input = input;
-    }
-
-    public void setInput(String input) {
-        try {
-            this.input = DataInput.valueOf(input.toUpperCase());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public DataOutput getOutput() {
-        return output;
     }
 
     public void setOutput(DataOutput output) {
         this.output = output;
     }
 
-    public void setOutput(String output) {
-        try {
-            this.output = DataOutput.valueOf(output.toUpperCase());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void setInputName(String inputName) {
+        this.inputName = inputName;
+    }
+
+    public void setOutputName(String outputName) {
+        this.outputName = outputName;
     }
 
     public GenericsSorting() {
@@ -102,12 +78,38 @@ public class GenericsSorting {
     }
 
     public void run() {
-//        Scanner scanner = new Scanner(System.in);
-//        StringBuilder stringBuilder = new StringBuilder();
-//        while (scanner.hasNextLine()) {
-//            stringBuilder.append(scanner.nextLine()).append("\n");
-//        }
-//        add(stringBuilder);
+        Scanner scannerInput = null;
+        switch (input) {
+            case SCANNER:
+                scannerInput = new Scanner(System.in);
+                break;
+            case INPUTFILE:
+                scannerInput = new Scanner(inputName);
+                break;
+        }
+        try {
+            StringBuilder stringBuilder = new StringBuilder();
+            while (scannerInput.hasNextLine()) {
+                stringBuilder.append(scannerInput.nextLine()).append("\n");
+            }
+            add(stringBuilder);
+            scannerInput.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        switch (output) {
+            case SCANNER:
+                System.setOut(System.out);
+                break;
+            case OUTPUTFILE:
+                try {
+                    System.setOut(new PrintStream(new FileOutputStream(outputName)));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
     }
 
     private void add(StringBuilder stringBuilder) {
