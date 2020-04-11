@@ -99,11 +99,19 @@ public class GenericsSorting {
             case LINE:
                 return first.length() - second.length();
             case WORD:
-                if (first.length() == second.length()) {
+//                Good solution, bud not finished test 8
+//                if (first.length() == second.length()) {
 //                    return Character.compare(first.charAt(0), second.charAt(0));
-                    return (int) first.charAt(0) - (int) second.charAt(0);
+//                }
+//                return first.length() - second.length();
+//                Bad solution
+                if (first.matches("-?\\d+") && second.matches("-?\\d+")) {
+                    int a = Integer.parseInt(first);
+                    int b = Integer.parseInt(second);
+                    return Integer.compare(a, b);
+                } else {
+                    return first.length() - second.length();
                 }
-                return first.length() - second.length();
             case LONG:
                 return (int) (Long.parseLong(first) - Long.parseLong(second));
         }
@@ -137,8 +145,7 @@ public class GenericsSorting {
                 string = "Total lines: %d.\nSorted data:";
                 break;
             case WORD:
-                Collections.sort(list);
-                string = "Total numbers: %d.\nSorted data:";
+                string = "Total words: %d.\nSorted data:";
                 break;
             case LONG:
                 string = "Total numbers: %d.\nSorted data:";
