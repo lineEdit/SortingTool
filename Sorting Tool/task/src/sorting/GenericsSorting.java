@@ -4,6 +4,7 @@ import java.util.*;
 
 public class GenericsSorting {
     private DataType type;
+    private DataSorting sorting;
     private List<String> list;
     private Deque<String> maxValue;
     private Map<String, Integer> maxCount;
@@ -18,7 +19,26 @@ public class GenericsSorting {
 
     public void setType(String type) {
         try {
-            this.type = DataType.valueOf(type);
+            this.type = DataType.valueOf(type.toUpperCase());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public DataSorting getSorting() {
+        return sorting;
+    }
+
+    public void setSorting(DataSorting sorting) {
+        this.sorting = sorting;
+    }
+
+    public void setSorting(String sorting) {
+        if (sorting.isEmpty()) {
+            this.sorting = DataSorting.NATURAL;
+        }
+        try {
+            this.sorting = DataSorting.valueOf(sorting.toUpperCase());
         } catch (Exception e) {
             e.printStackTrace();
         }
