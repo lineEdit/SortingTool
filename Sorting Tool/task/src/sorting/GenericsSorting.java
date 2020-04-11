@@ -7,7 +7,6 @@ public class GenericsSorting {
     private DataType type;
     private DataSorting sorting;
     private List<String> list;
-    private Deque<String> maxValue;
     private Map<String, Integer> maxCount;
 
     public DataType getType() {
@@ -53,7 +52,6 @@ public class GenericsSorting {
     public GenericsSorting() {
         this.type = DataType.WORD;
         this.list = new ArrayList<>();
-        this.maxValue = new ArrayDeque<>();
         this.maxCount = new TreeMap<>();
     }
 
@@ -74,45 +72,7 @@ public class GenericsSorting {
     }
 
     public void add(String value) {
-        if (list.size() > 0) {
-            if (compare(value, maxValue.peek()) >= 0) {
-                list.add(value);
-                maxValue.push(value);
-            } else if (compare(value, list.get(0)) < 0) {
-                list.add(0, value);
-            } else {
-                if (compare(value, maxValue.peekFirst()) == compare(value, maxValue.peekLast())) {
-                    int i = list.size() / 2;
-                    long diff = compare(value, list.get(i));
-                    long oldDiff = Math.abs(diff);
-                    while (diff != 0) {
-                        if (oldDiff > Math.abs(diff)) break;
-                        if (diff > 0) ++i;
-                        if (diff < 0) --i;
-                        diff = compare(value, list.get(i));
-                        oldDiff = Math.abs(diff);
-                    }
-                    list.add(i, value);
-                } else if (compare(value, maxValue.peekFirst()) > 0) {
-                    for (int i = list.size() - 1; i >= 0; --i) {
-                        if (compare(value, list.get(i)) >= 0) {
-                            list.add(i, value);
-                            break;
-                        }
-                    }
-                } else {
-                    for (int i = 0; i < list.size(); ++i) {
-                        if (compare(value, list.get(i)) <= 0) {
-                            list.add(i, value);
-                            break;
-                        }
-                    }
-                }
-            }
-        } else {
-            list.add(value);
-            maxValue.add(value);
-        }
+        list.add(value);
         if (maxCount.containsKey(value)) {
             maxCount.replace(value, maxCount.get(value) + 1);
         } else {
@@ -120,54 +80,12 @@ public class GenericsSorting {
         }
     }
 
-    private int compare(String first, String second) {
-        switch (type) {
-            case LINE:
-                return first.length() - second.length();
-            case WORD:
-//                Good solution, bud not finished test 8
-                if (first.length() == second.length()) {
-                    return Character.compare(first.charAt(0), second.charAt(0));
-                }
-                return first.length() - second.length();
-//                Bad solution
-//                if (first.matches("-?\\d+") && second.matches("-?\\d+")) {
-//                    int a = Integer.parseInt(first);
-//                    int b = Integer.parseInt(second);
-//                    return Integer.compare(a, b);
-//                } else {
-//                    return first.length() - second.length();
-//                }
-            case LONG:
-                return Long.compare(Long.parseLong(first), Long.parseLong(second));
-        }
-        return 0;
-    }
-
-    public void show() {
-        String string = "";
-        int size = list.size();
-        int time = maxCount.get(maxValue.peek());
-        int weight = 100 * time / size;
-        switch (type) {
-            case LINE:
-                string = "Total lines: %d\nThe longest line:\n%s\n(%d + time(s), %d%%).";
-                break;
-            case WORD:
-                string = "Total words: %d\nThe longest word: %s (%d + time(s), %d%%).";
-                break;
-            case LONG:
-                string = "Total numbers: %d\nThe greatest number: %s (%d + time(s), %d%%).";
-                break;
-        }
-        System.out.format(string, size, maxValue.peek(), time, weight);
-    }
-
     public void sort() {
         String string = "";
         int size = list.size();
         switch (type) {
             case LINE:
+                Collections.sort(list);
                 string = "Total lines: %d.\n";
                 break;
             case WORD:
@@ -175,6 +93,15 @@ public class GenericsSorting {
                 string = "Total words: %d.\n";
                 break;
             case LONG:
+                List<Long> array = new ArrayList<>();
+                for (String item : list) {
+                    array.add(Long.parseLong(item));
+                }
+                Collections.sort(array);
+                list.clear();
+                for (Long item : array) {
+                    list.add(String.valueOf(item));
+                }
                 string = "Total numbers: %d.\n";
                 break;
         }

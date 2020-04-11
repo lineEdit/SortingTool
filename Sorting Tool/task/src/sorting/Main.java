@@ -39,8 +39,6 @@ public class Main {
                     break;
             }
         }
-//        System.out.println(genericsSorting.getType());
-//        System.out.println(genericsSorting.getSorting());
         genericsSorting.add(stringBuilder);
         genericsSorting.sort();
     }
