@@ -47,50 +47,36 @@ public class GenericsSorting {
         }
     }
 
-    private long parseValue(String value) {
-        switch (type) {
-            case LINE:
-            case WORD:
-                return value.length();
-            case LONG:
-                return Long.parseLong(value);
-        }
-        return 0L;
-    }
-
     public void add(String value) {
-        long input = parseValue(value);
-
         if (list.size() > 0) {
-            if (isMax(input, value)) {
+            if (compare(value, maxValue.peek()) >= 0) {
                 list.add(value);
-            } else if (input <= parseValue(list.get(0))) {
+                maxValue.push(value);
+            } else if (compare(value, list.get(0)) < 0) {
                 list.add(0, value);
             } else {
-                long abs = Math.abs(input - parseValue(maxValue.getFirst()))
-                        - Math.abs(input - parseValue(maxValue.getLast()));
-                if(abs == 0) {
+                if (compare(value, maxValue.peekFirst()) == compare(value, maxValue.peekLast())) {
                     int i = list.size() / 2;
-                    long diff = input - parseValue(list.get(i));
+                    long diff = compare(value, list.get(i));
                     long oldDiff = Math.abs(diff);
                     while (diff != 0) {
                         if (oldDiff > Math.abs(diff)) break;
                         if (diff > 0) ++i;
                         if (diff < 0) --i;
-                        diff = input - parseValue(list.get(i));
+                        diff = compare(value, list.get(i));
                         oldDiff = Math.abs(diff);
                     }
                     list.add(i, value);
-                } else if (abs < 0) {
-                    for (int i = 0; i < list.size(); ++i) {
-                        if (input <= parseValue(list.get(i))) {
+                } else if (compare(value, maxValue.peekFirst()) > 0) {
+                    for (int i = list.size() - 1; i >= 0; --i) {
+                        if (compare(value, list.get(i)) >= 0) {
                             list.add(i, value);
                             break;
                         }
                     }
                 } else {
-                    for (int i = list.size() - 1; i >= 0; --i) {
-                        if (input >= parseValue(list.get(i))) {
+                    for (int i = 0; i < list.size(); ++i) {
+                        if (compare(value, list.get(i)) <= 0) {
                             list.add(i, value);
                             break;
                         }
@@ -108,17 +94,19 @@ public class GenericsSorting {
         }
     }
 
-    private boolean isMax(long input, String value) {
-        if (maxValue.size() > 0) {
-            if (input >= parseValue(maxValue.peek())) {
-                maxValue.push(value);
-                return true;
-            }
-        } else {
-            maxValue.push(value);
-            return true;
+    private int compare(String first, String second) {
+        switch (type) {
+            case LINE:
+                return first.length() - second.length();
+            case WORD:
+                if (first.length() == second.length()) {
+                    return Character.compare(first.charAt(0), second.charAt(0));
+                }
+                return first.length() - second.length();
+            case LONG:
+                return (int) (Long.parseLong(first) - Long.parseLong(second));
         }
-        return false;
+        return 0;
     }
 
     public void show() {
