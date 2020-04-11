@@ -12,10 +12,21 @@ public class GenericsSorting {
         NATURAL,
         BYCOUNT
     }
+    public enum DataInput {
+        SCANNER,
+        INPUTFILE
+    }
+    public enum DataOutput {
+        SCANNER,
+        OUTPUTFILE
+    }
+
     private DataType type;
     private DataSorting sorting;
-    private List<String> list;
-    private Map<String, Integer> maxCount;
+    private DataInput input;
+    private DataOutput output;
+    private final List<String> list;
+    private final Map<String, Integer> maxCount;
 
     public DataType getType() {
         return type;
@@ -49,14 +60,57 @@ public class GenericsSorting {
         }
     }
 
+    public DataInput getInput() {
+        return input;
+    }
+
+    public void setInput(DataInput input) {
+        this.input = input;
+    }
+
+    public void setInput(String input) {
+        try {
+            this.input = DataInput.valueOf(input.toUpperCase());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public DataOutput getOutput() {
+        return output;
+    }
+
+    public void setOutput(DataOutput output) {
+        this.output = output;
+    }
+
+    public void setOutput(String output) {
+        try {
+            this.output = DataOutput.valueOf(output.toUpperCase());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public GenericsSorting() {
         this.type = DataType.WORD;
         this.sorting = DataSorting.NATURAL;
+        this.input = DataInput.SCANNER;
+        this.output = DataOutput.SCANNER;
         this.list = new ArrayList<>();
         this.maxCount = new TreeMap<>();
     }
 
-    public void add(StringBuilder stringBuilder) {
+    public void run() {
+//        Scanner scanner = new Scanner(System.in);
+//        StringBuilder stringBuilder = new StringBuilder();
+//        while (scanner.hasNextLine()) {
+//            stringBuilder.append(scanner.nextLine()).append("\n");
+//        }
+//        add(stringBuilder);
+    }
+
+    private void add(StringBuilder stringBuilder) {
         switch (type) {
             case LINE:
                 for (String item : stringBuilder.toString().split("\n")) {
@@ -80,7 +134,7 @@ public class GenericsSorting {
         }
     }
 
-    public void add(String value) {
+    private void add(String value) {
         list.add(value);
         if (maxCount.containsKey(value)) {
             maxCount.replace(value, maxCount.get(value) + 1);

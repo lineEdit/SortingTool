@@ -35,17 +35,25 @@ public class Main {
                     }
                     genericsSorting.setSorting(entry.getValue());
                     break;
+                case "-inputFile":
+                    if (entry.getValue() == null) {
+                        System.out.println("No inputFile name defined!");
+                        return;
+                    }
+                    genericsSorting.setInput(entry.getValue());
+                    break;
+                case "-outputFile":
+                    if (entry.getValue() == null) {
+                        System.out.println("No inputFile name defined!");
+                        return;
+                    }
+                    genericsSorting.setOutput(entry.getValue());
+                    break;
                 default:
                     System.out.println("\"" + entry.getKey() + "\" isn't a valid parameter. It's skipped.");
             }
         }
-
-        Scanner scanner = new Scanner(System.in);
-        StringBuilder stringBuilder = new StringBuilder();
-        while (scanner.hasNextLine()) {
-            stringBuilder.append(scanner.nextLine()).append("\n");
-        }
-        genericsSorting.add(stringBuilder);
+        genericsSorting.run();
         genericsSorting.sort();
     }
 }
