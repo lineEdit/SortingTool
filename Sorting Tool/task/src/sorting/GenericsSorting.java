@@ -4,15 +4,9 @@ import java.util.*;
 
 public class GenericsSorting {
     public enum DataType {
-        LINE("LINE"),
-        WORD("WORD"),
-        LONG("LONG");
-
-        private String type;
-
-        DataType(String type) {
-            this.type = type;
-        }
+        LINE,
+        WORD,
+        LONG
     }
     public enum DataSorting {
         NATURAL,
@@ -32,15 +26,11 @@ public class GenericsSorting {
     }
 
     public void setType(String type) {
-//        if (type == null) {
-//            this.type = DataType.WORD;
-//        } else {
-            try {
-                this.type = DataType.valueOf(type.toUpperCase());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-//        }
+        try {
+            this.type = DataType.valueOf(type.toUpperCase());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public DataSorting getSorting() {
@@ -52,15 +42,11 @@ public class GenericsSorting {
     }
 
     public void setSorting(String sorting) {
-//        if (sorting == null) {
-//            this.sorting = DataSorting.NATURAL;
-//        } else {
-            try {
-                this.sorting = DataSorting.valueOf(sorting.toUpperCase());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-//        }
+        try {
+            this.sorting = DataSorting.valueOf(sorting.toUpperCase());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public GenericsSorting() {
